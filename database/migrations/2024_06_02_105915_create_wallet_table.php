@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('wallet', function (Blueprint $table) {
             $table->id();
+            $table->integer('saldo');
+            $table->integer('poin');
             $table->timestamps();
         });
     }
