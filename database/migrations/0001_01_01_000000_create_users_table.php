@@ -11,14 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
+        //keranjang(1onM)
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('username')->unique();
+            $table->string('no_hp')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('role')->default('pengguna');
             $table->rememberToken();
             $table->timestamps();
+            $table->unsignedBigInteger('keranjang_id')->constrained(
+                table: 'keranjang',
+                indexName: 'user_keranjang_id'
+            );
+
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

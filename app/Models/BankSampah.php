@@ -8,4 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class BankSampah extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'jenis_sampah',
+        'berat_sampah',
+        'total_point',
+        'status_setor',
+        'tanggal_setor',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
