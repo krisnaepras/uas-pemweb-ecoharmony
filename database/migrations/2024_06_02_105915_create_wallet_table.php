@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('wallet', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id')->constrained(
+                table: 'users',
+                indexName: 'wallet_user_id'
+            );
             $table->integer('saldo');
             $table->integer('poin');
             $table->timestamps();

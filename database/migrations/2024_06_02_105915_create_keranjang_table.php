@@ -20,6 +20,7 @@ return new class extends Migration
             );
             $table->integer('jumlah_barang');
             $table->integer('total_harga');
+            $table->integer('status');
         });
     }
 

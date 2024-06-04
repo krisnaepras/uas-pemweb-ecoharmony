@@ -9,10 +9,19 @@ class Keranjang extends Model
 {
     use HasFactory;
 
+    protected $table = 'keranjang';
     protected $fillable = [
         'jumlah_barang',
         'total_harga',
     ];
 
-    
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function produk()
+    {
+        return $this->hasMany(Produk::class);
+    }
 }

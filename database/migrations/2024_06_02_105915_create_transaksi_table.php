@@ -14,10 +14,6 @@ return new class extends Migration
         //FK: detail_transaksi_id(1to1)
         Schema::create('transaksi', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('detail_transaksi_id')->constrained(
-                table: 'detail_transaksi',
-                indexName: 'transaksi_detail_transaksi_id'
-            );
             $table->integer('total_transaksi');
             $table->integer('status_pesanan');
             $table->timestamps();

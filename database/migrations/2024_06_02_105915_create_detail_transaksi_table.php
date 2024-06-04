@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //FK: keranjang_id(1toM)
+        //FK: keranjang_id(1toM), produk, transaksi
         Schema::create('detail_transaksi', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('produk_id')->constrained(
+                table: 'produk',
+                indexName: 'detail_transaksi_produk_id'
+            );
             $table->unsignedBigInteger('transaksi_id')->constrained(
                 table: 'transaksi',
                 indexName: 'detail_transaksi_transaksi_id'

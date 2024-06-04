@@ -9,8 +9,16 @@ class Wallet extends Model
 {
     use HasFactory;
 
+
+    protected $table = 'wallet';
     protected $fillable = [
         'saldo',
         'poin',
     ];
+
+    //user_id
+    public function user()
+    {
+        return $this->hasOne(User::class);
+    }
 }

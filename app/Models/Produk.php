@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Produk extends Model
 {
     use HasFactory;
+
+    protected $table = 'produk';
     protected $fillable = [
         'nama_produk',
         'harga_produk',
@@ -17,4 +19,14 @@ class Produk extends Model
         'kategori_produk',
         'terjual'
     ];
+
+    public function detail_transaksi()
+    {
+        return $this->belongsTo(DetailTransaksi::class);
+    }
+
+    public function keranjang()
+    {
+        return $this->belongsTo(Keranjang::class);
+    }
 }

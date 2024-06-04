@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //keranjang(1onM)
+        //keranjang(1onM), detail_transaksi
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -23,9 +23,17 @@ return new class extends Migration
             $table->string('role')->default('pengguna');
             $table->rememberToken();
             $table->timestamps();
+            $table->unsignedBigInteger('bank_sampah_id')->constrained(
+                table: 'bank_sampah',
+                indexName: 'user_bank_sampah_id'
+            );
             $table->unsignedBigInteger('keranjang_id')->constrained(
                 table: 'keranjang',
                 indexName: 'user_keranjang_id'
+            );
+            $table->unsignedBigInteger('detail_transaksi_id')->constrained(
+                table: 'detail_transaksi',
+                indexName: 'user_detail_transaksi_id'
             );
 
         });
