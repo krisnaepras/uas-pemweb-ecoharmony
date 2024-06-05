@@ -23,15 +23,15 @@ return new class extends Migration
             $table->string('role')->default('pengguna');
             $table->rememberToken();
             $table->timestamps();
-            $table->unsignedBigInteger('bank_sampah_id')->constrained(
+            $table->unsignedBigInteger('bank_sampah_id')->nullable()->constrained(
                 table: 'bank_sampah',
                 indexName: 'user_bank_sampah_id'
             );
-            $table->unsignedBigInteger('keranjang_id')->constrained(
+            $table->unsignedBigInteger('keranjang_id')->nullable()->constrained(
                 table: 'keranjang',
                 indexName: 'user_keranjang_id'
             );
-            $table->unsignedBigInteger('detail_transaksi_id')->constrained(
+            $table->unsignedBigInteger('detail_transaksi_id')->nullable()->constrained(
                 table: 'detail_transaksi',
                 indexName: 'user_detail_transaksi_id'
             );

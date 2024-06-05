@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Wallet;
 use Illuminate\Http\Request;
 
 class WalletController extends Controller
@@ -9,9 +10,13 @@ class WalletController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+    //table wallet, kolom berisi saldo dan poin
+
     public function index()
     {
-        //
+        $wallets = Wallet::all();
+        return view('wallet.index', compact('wallets'));
     }
 
     /**

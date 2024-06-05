@@ -17,8 +17,8 @@ return new class extends Migration
                 table: 'users',
                 indexName: 'wallet_user_id'
             );
-            $table->integer('saldo');
-            $table->integer('poin');
+            $table->integer('saldo')->default(0);
+            $table->integer('poin')->default(0);
             $table->timestamps();
         });
     }
