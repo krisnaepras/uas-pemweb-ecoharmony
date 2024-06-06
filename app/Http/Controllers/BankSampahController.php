@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\BankSampah;
+use App\Models\User;
+use App\Models\JenisSampah; // Add this line
+use Illuminate\Support\Facades\Auth;
 
 class BankSampahController extends Controller
 {
@@ -11,7 +15,9 @@ class BankSampahController extends Controller
      */
     public function index()
     {
-        //
+        // Menampilkan data bank sampah yang belum dikonfirmasi
+        $banksampahs = BankSampah::where('status_setor', 'Belum Dikonfirmasi')->with('user')->get();
+        return view('banksampah.index', compact('banksampahs'));
     }
 
     /**
@@ -19,17 +25,33 @@ class BankSampahController extends Controller
      */
     public function create()
     {
-        //
+        $jenisSampah = JenisSampah::all();
+        return view('banksampah.create', compact('jenisSampah'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        //
-    }
+    { {
+            $request->validate([
+                'jenis_sampah' => 'required|exists:jenis_sampah,id',
+                'berat_sampah' => 'required|numeric',
+                'tanggal_setor' => 'required|date',
+            ]);
 
+            $jenisSampah = JenisSampah::find($request->jenis_sampah);
+            $totalPoint = $jenisSampah->poin_sampah * $request->berat_sampah;
+
+            $bankSampah = new BankSampah($request->all());
+            $bankSampah->user_id = auth()->user()->id;
+            $bankSampah->jenis_sampah_id = $request->jenis_sampah;
+            $bankSampah->total_point = $totalPoint;
+            $bankSampah->save();
+
+            return redirect()->route('banksampah.create')->with('success', 'Data bank sampah berhasil ditambahkan.');
+        }
+    }
     /**
      * Display the specified resource.
      */

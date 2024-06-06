@@ -11,20 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //FK: keranjang_id(1toM), produk, transaksi
         Schema::create('detail_transaksi', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('keranjang_id')->constrained(
+                table: 'keranjang',
+                indexName: 'detail_transaksi_keranjang_id'
+            );
             $table->unsignedBigInteger('produk_id')->constrained(
                 table: 'produk',
                 indexName: 'detail_transaksi_produk_id'
             );
-            $table->unsignedBigInteger('transaksi_id')->constrained(
-                table: 'transaksi',
-                indexName: 'detail_transaksi_transaksi_id'
-            );
-            $table->integer('subtotal');
-            $table->integer('diskon');
-            $table->integer('total');
+
+            $table->integer('jumlah_produk'); //jumlah produk dalam keranjang yang di checkout
+            $table->integer('total'); //total dari semua produk
             $table->timestamps();
         });
     }

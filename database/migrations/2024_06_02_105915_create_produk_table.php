@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('gambar_produk');
             $table->string('deskripsi_produk');
             $table->string('kategori_produk');
-            $table->string('terjual');
+            $table->string('terjual')->default(0);
             $table->timestamps();
         });
     }

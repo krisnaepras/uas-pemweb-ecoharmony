@@ -11,15 +11,17 @@ class BankSampah extends Model
 
     protected $table = 'bank_sampah';
     protected $fillable = [
-        'jenis_sampah',
         'berat_sampah',
         'total_point',
         'status_setor',
-        'tanggal_setor',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function JenisSampah() {
+        return $this->belongsTo(JenisSampah::class);
     }
 }

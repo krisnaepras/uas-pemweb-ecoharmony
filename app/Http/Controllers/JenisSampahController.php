@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\JenisSampah;
 
-class AkunController extends Controller
+class JenisSampahController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,7 +20,8 @@ class AkunController extends Controller
      */
     public function create()
     {
-        //
+        $jenisSampah = JenisSampah::all();
+        return view('banksampah.create', compact('jenisSampah'));
     }
 
     /**

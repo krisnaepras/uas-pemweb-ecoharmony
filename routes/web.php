@@ -5,9 +5,15 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\BankSampahController;
+
+
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/banksampah/create', [BankSampahController::class, 'create'])->name('banksampah.create');
+Route::post('/banksampah', [BankSampahController::class, 'store'])->name('banksampah.store');
 
 Route::get('/dash', function () {
     return view('dashboard');

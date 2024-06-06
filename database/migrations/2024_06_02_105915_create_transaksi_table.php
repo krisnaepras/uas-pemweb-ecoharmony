@@ -14,8 +14,16 @@ return new class extends Migration
         //FK: detail_transaksi_id(1to1)
         Schema::create('transaksi', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id')->constrained(
+                table: 'users',
+                indexName: 'transaksi_user_id'
+            );
+            $table->unsignedBigInteger('transaksi_id')->constrained(
+                table: 'transaksi',
+                indexName: 'detail_transaksi_transaksi_id'
+            );
             $table->integer('total_transaksi');
-            $table->integer('status_pesanan');
+            $table->integer('status_pesanan')->default(0);
             $table->timestamps();
         });
     }

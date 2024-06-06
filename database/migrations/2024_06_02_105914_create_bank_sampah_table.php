@@ -13,11 +13,19 @@ return new class extends Migration
     {
         Schema::create('bank_sampah', function (Blueprint $table) {
             $table->id();
-            $table->string('jenis_sampah');
-            $table->integer('berat_sampah');
-            $table->integer('total_point');
-            $table->string('status_setor');
-            $table->date('tanggal_setor');
+            $table->unsignedBigInteger('user_id')->constrained(
+                table: 'users',
+                indexName: 'bank_sampah_user_id'
+            );
+            $table->unsignedBigInteger('jenis_sampah_id')->constrained(
+                table: 'jenis_sampah',
+                indexName: 'bank_sampah_jenis_sampah_id'
+            );
+            $table->float('berat_sampah');
+            $table->integer('total_point')->default(0);
+            $table->string('status_setor')->default(0);
+            $table->date('tgl_setor')->nullable();
+            $table->timestamps();
         });
     }
 

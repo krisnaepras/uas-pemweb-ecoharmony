@@ -11,14 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('wallet', function (Blueprint $table) {
+        Schema::create('jenis_sampah', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->constrained(
-                table: 'users',
-                indexName: 'wallet_user_id'
-            );
-            $table->float('saldo')->default(0);
-            $table->integer('poin')->default(0);
+            $table->string('jenis_sampah');
+            $table->float('poin_sampah');
             $table->timestamps();
         });
     }
@@ -28,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('wallet');
+        Schema::dropIfExists('jenis_sampah');
     }
 };

@@ -16,9 +16,13 @@ class Transaksi extends Model
         'status_pesanan',
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
     //detail_transaksi
     public function detail_transaksi()
     {
-        return $this->belongsTo(DetailTransaksi::class);
+        return $this->hasOne(DetailTransaksi::class);
     }
 }

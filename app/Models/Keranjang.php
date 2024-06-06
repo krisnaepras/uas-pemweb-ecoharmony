@@ -24,4 +24,9 @@ class Keranjang extends Model
     {
         return $this->hasMany(Produk::class);
     }
+
+    public function detail_transaksi()
+    {
+        return $this->belongsTo(DetailTransaksi::class);
+    }
 }

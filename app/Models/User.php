@@ -55,11 +55,11 @@ class User extends Authenticatable
         return $this->hasMany(Keranjang::class);
     }
 
-    public function detailTransaksi()
+    public function transaksi()
     {
-        return $this->hasMany(DetailTransaksi::class);
+        return $this->hasMany(Transaksi::class);
     }
-    
+
     public function wallet()
     {
         return $this->belongsTo(Wallet::class);
