@@ -23,8 +23,8 @@ return new class extends Migration
                 indexName: 'keranjang_produk_id'
             );
             $table->integer('jumlah_barang'); //masing-masing produk pada keranjang
-            $table->integer('total_harga'); //jumlah*harga masing-masing produk
-            $table->integer('status')->default(0); //0=keranjang, 1=checkout, 2=selesai
+            // $table->integer('total_harga'); //jumlah*harga masing-masing produk
+            // $table->integer('status')->default(0); //0=keranjang, 1=checkout, 2=selesai
         });
     }
 

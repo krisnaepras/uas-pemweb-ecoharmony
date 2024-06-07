@@ -22,7 +22,6 @@ return new class extends Migration
                 indexName: 'detail_transaksi_produk_id'
             );
 
-            $table->integer('jumlah_produk'); //jumlah produk dalam keranjang yang di checkout
             $table->integer('total'); //total dari semua produk
             $table->timestamps();
         });

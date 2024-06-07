@@ -18,11 +18,10 @@ return new class extends Migration
                 table: 'users',
                 indexName: 'transaksi_user_id'
             );
-            $table->unsignedBigInteger('transaksi_id')->constrained(
+            $table->unsignedBigInteger('detail_transaksi_id')->constrained(
                 table: 'transaksi',
                 indexName: 'detail_transaksi_transaksi_id'
             );
-            $table->integer('total_transaksi');
             $table->integer('status_pesanan')->default(0);
             $table->timestamps();
         });
