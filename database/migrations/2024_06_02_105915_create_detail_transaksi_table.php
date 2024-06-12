@@ -23,6 +23,7 @@ return new class extends Migration
             );
 
             $table->integer('total'); //total dari semua produk
+            $table->string('pembayaran'); //cash atau saldo/poin
             $table->timestamps();
         });
     }

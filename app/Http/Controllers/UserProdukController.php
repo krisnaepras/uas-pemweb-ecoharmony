@@ -3,15 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Produk;
 
-class TipsController extends Controller
+class UserProdukController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $products = Produk::all();
+        return view('user.produk.index', compact('products'));
     }
 
     /**
@@ -33,9 +35,9 @@ class TipsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Produk $product)
     {
-        //
+        return view('user.produk.show', compact('product'));
     }
 
     /**

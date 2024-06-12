@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\JenisSampah;
+use Illuminate\Support\Facades\Redirect;
 
 class JenisSampahController extends Controller
 {
@@ -12,7 +13,8 @@ class JenisSampahController extends Controller
      */
     public function index()
     {
-        //
+        $jenisSampah = JenisSampah::all();
+        return view('admin.jenissampah.index', compact('jenisSampah'));
     }
 
     /**
@@ -24,43 +26,36 @@ class JenisSampahController extends Controller
         return view('banksampah.create', compact('jenisSampah'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'jenis_sampah' => 'required|string|max:255',
+            'poin_sampah' => 'required|numeric',
+        ]);
+
+        JenisSampah::create($request->all());
+
+        return Redirect::route('admin.jenis-sampah.index')->with('success', 'Jenis sampah berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'jenis_sampah' => 'required|string|max:255',
+            'poin_sampah' => 'required|numeric',
+        ]);
+
+        $jenisSampah = JenisSampah::findOrFail($id);
+        $jenisSampah->update($request->all());
+
+        return Redirect::route('admin.jenis-sampah.index')->with('success', 'Jenis sampah berhasil diperbarui.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function destroy($id)
     {
-        //
-    }
+        $jenisSampah = JenisSampah::findOrFail($id);
+        $jenisSampah->delete();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return Redirect::route('admin.jenis-sampah.index')->with('success', 'Jenis sampah berhasil dihapus.');
     }
 }

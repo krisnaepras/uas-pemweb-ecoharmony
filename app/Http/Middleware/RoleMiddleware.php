@@ -17,7 +17,7 @@ class RoleMiddleware
         $user = Auth::user();
 
         if (!in_array($user->role, $roles)) {
-            return redirect('/'); // Atau halaman lain yang diinginkan
+            return redirect('/login'); // Atau halaman lain yang diinginkan
         }
 
         return $next($request);

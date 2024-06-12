@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\BankSampah;
 use App\Models\User;
-use App\Models\JenisSampah; // Add this line
+use App\Models\JenisSampah;
+use App\Models\Wallet;
 use Illuminate\Support\Facades\Auth;
 
 class BankSampahController extends Controller
@@ -16,7 +17,8 @@ class BankSampahController extends Controller
     public function index()
     {
         // Menampilkan data bank sampah yang belum dikonfirmasi
-        $banksampahs = BankSampah::where('status_setor', 'Belum Dikonfirmasi')->with('user')->get();
+        $banksampahs = BankSampah::where('status_setor', '0')->with('user')->get();
+        $jenisSampah = JenisSampah::all();
         return view('banksampah.index', compact('banksampahs'));
     }
 
@@ -26,8 +28,10 @@ class BankSampahController extends Controller
     public function create()
     {
         $jenisSampah = JenisSampah::all();
-        return view('banksampah.create', compact('jenisSampah'));
+        $banksampahs = BankSampah::where('status_setor', '0')->with('user')->get();
+        return view('banksampah.create', compact('jenisSampah', 'banksampahs'));
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -46,6 +50,7 @@ class BankSampahController extends Controller
             $bankSampah = new BankSampah($request->all());
             $bankSampah->user_id = auth()->user()->id;
             $bankSampah->jenis_sampah_id = $request->jenis_sampah;
+            $bankSampah->tgl_setor = $request->tanggal_setor;
             $bankSampah->total_point = $totalPoint;
             $bankSampah->save();
 
@@ -79,8 +84,44 @@ class BankSampahController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        $bankSampah = BankSampah::findOrFail($id);
+        $bankSampah->delete();
+
+        return redirect()->route('banksampah.confirmation')->with('success', 'Data bank sampah berhasil dihapus.');
+    }
+
+
+    public function confirm($id)
+    {
+        $bankSampah = BankSampah::findOrFail($id);
+
+        if ($bankSampah->status_setor != 1) {
+            $bankSampah->status_setor = 1;
+            $bankSampah->save();
+
+            $wallet = Wallet::firstOrNew(['user_id' => $bankSampah->user_id]);
+            $wallet->poin += $bankSampah->total_point;
+            $wallet->save();
+
+            return redirect()->route('banksampah.confirmation')->with('success', 'Data bank sampah berhasil dikonfirmasi dan poin telah ditambahkan ke wallet user.');
+        }
+
+        return redirect()->route('banksampah.confirmation')->with('info', 'Data bank sampah sudah pernah dikonfirmasi sebelumnya.');
+    }
+
+    public function confirmation()
+    {
+        $banksampahs = BankSampah::where('status_setor', '0')->with('user')->get();
+        $jenisSampah = JenisSampah::all();
+        return view('admin.banksampah.confirmation', compact('banksampahs'));
+    }
+
+    public function history()
+    {
+        $banksampahs = BankSampah::where('status_setor', '1')->with('user')->get();
+        $jenisSampah = JenisSampah::all();
+        return view('banksampah.history', compact('banksampahs'));
     }
 }
