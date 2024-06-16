@@ -5,12 +5,19 @@
             @foreach ($products as $product)
                 <div class="col-md-4">
                     <div class="card mb-4">
-                        <img class="card-img-top" src="{{ asset('images/' . $product->gambar_produk) }}" alt="{{ $product->nama_produk }}">
+                        <img class="card-img-top" src="{{ asset('images/' . $product->gambar_produk) }}" alt="{{ $product->nama_produk }}" style="max-width: 200px">
                         <div class="card-body">
-                            <h5 class="card-title">{{ $product->nama_produk }}</h5>
+                            <h5 class="card-title">
+                                <a href="{{ route('user.products.show', $product->id) }}">{{ $product->nama_produk }}</a>
+                            </h5>
                             <p class="card-text">Harga: {{ $product->harga_produk }}</p>
                             <p class="card-text">Terjual: {{ $product->terjual }}</p>
-                            <a href="{{ route('user.products.show', $product->id) }}" class="btn btn-primary">Lihat Detail</a>
+                            <form action="{{ route('keranjang.store') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="produk_id" value="{{ $product->id }}">
+                                <input type="hidden" name="jumlah_barang" value="1">
+                                <button type="submit" class="btn btn-success">Tambah ke Keranjang</button>
+                            </form>
                         </div>
                     </div>
                 </div>

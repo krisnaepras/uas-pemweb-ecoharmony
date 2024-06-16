@@ -11,9 +11,15 @@ class Keranjang extends Model
 
     protected $table = 'keranjang';
     protected $fillable = [
+        'user_id',
+        'produk_id',
         'jumlah_barang',
         'total_harga',
+        'subtotal',
+        'status_keranjang',
     ];
+
+    public $timestamps = false;
 
     public function user()
     {
@@ -22,11 +28,11 @@ class Keranjang extends Model
 
     public function produk()
     {
-        return $this->hasMany(Produk::class);
+        return $this->belongsToMany(Produk::class, 'keranjang_produk')->withPivot('jumlah_barang', 'subtotal');
     }
 
     public function detail_transaksi()
     {
-        return $this->belongsTo(DetailTransaksi::class);
+        return $this->hasMany(DetailTransaksi::class);
     }
 }

@@ -1,0 +1,352 @@
+nanti jika ada yang salah tolong dibenarkan/ubah sekalian supaya bisa berjalan normal
+
+// Route untuk seluruh
+Route::middleware('auth')->group(function () {
+    ...
+});
+
+// Route khusus admin
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    ...
+});
+
+// Route khusus pengguna
+Route::middleware(['auth', 'role:pengguna'])->group(function () {
+    ...
+    Route::get('keranjang/checkout', [KeranjangController::class, 'checkout'])->name('keranjang.checkout');
+});
+<x-app-layout>
+    <div class="container">
+        <h2>Keranjang Belanja</h2>
+        @if ($keranjang && $keranjang->produk->count() > 0)
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Gambar</th>
+                        <th>Nama Produk</th>
+                        <th>Harga</th>
+                        <th>Jumlah</th>
+                        <th>Subtotal</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($keranjang->produk as $produk)
+                        <tr>
+                            <td><img src="{{ asset('storage/' . $produk->gambar_produk) }}"
+                                    alt="{{ $produk->nama_produk }}" style="width: 50px;"></td>
+                            <td>{{ $produk->nama_produk }}</td>
+                            <td>{{ $produk->harga_produk }}</td>
+                            <td>
+                                <form action="{{ route('keranjang.update', $produk->id) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="number" name="jumlah_barang" value="{{ $produk->pivot->jumlah_barang }}"
+                                        min="1">
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                </form>
+                            </td>
+                            <td>{{ $produk->pivot->subtotal }}</td>
+                            <td>
+                                <form action="{{ route('keranjang.destroy', $produk->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger">Hapus</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            <div class="mt-3">
+                <h4>Total: {{ $total }}</h4>
+                <form action="{{ route('detail_transaksi.store') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-primary">Checkout</button>
+                </form>
+            </div>
+        @else
+            <p>Keranjang Anda kosong.</p>
+        @endif
+    </div>
+</x-app-layout>
+
+lanjutkan seperti skenario berikut
+pada tampilan halaman keranjang ada tombol checkout yang akan mengarahkan ke detail transaksi dan status_keranjang masih tetap ‘0’. kemudian Detail Transaksi akan mengambil data dari keranjang yang dicheckout.
+DetailTransaksi
+- Menampilkan detail (User)
+--bisa dibilang halaman checkout
+--menampilkan nama, harga, jumlah_barang, subtotal(dari masing-masing produk), total
+--pembayaran (pilihan cash atau poin)
+--- Jika poin user lebih dari total maka akan bisa menggunakan poin dan cash
+--- Jika poin tidak mencukupi maka hanya bisa menggunakan cash (akan dibayarkan offline dan akan di konfirmasi admin).
+--pada halaman ini ada tombol untuk membuat pesanan, kemudian seluruh data akan masuk di transaksi dan status_keranjang berubah menjadi 1.
+Transaksi
+-Manampilkan (untuk user)
+-- mengambil data dari detail_transaksi(cuma menampilkan nama produk yang dibeli, jika nama itu diklik maka akan muncul dibawahnya detailnya)
+-- terdapat tanggal pemesanan
+-- status_pesanan 0==diproses, 1==selesai
+- Manampilkan (untuk admin)
+--melihat daftar user yang melakukan transaksi, jika diklik maka akan muncul kebawah transaksi apa saja yang telah dilakukan oleh user. isi dari daftar yang muncul seperti berikut:
+--- mengambil data dari detail_transaksi dengan status 0
+--- status_pemesanan
+--- terdapat tombol konfirmasi dan hapus
+--- jika telah dikonfirmasi maka status_pemesanan akan menjadi 1
+--- jika menggunakan poin maka poin user akan berkurang, jika cash maka admin cuma konfirmasi saja
+
+- Menampilkan history transaksi (untuk user)
+--menampilkan secara singkat history pembelian dengan tanggal dan total harga (hanya transksi user tersebut)
+- menampilkan history transaksi (admin)
+--menampilkan secara singkat history pembelian dengan tanggal dan total harga(untuk semua user yang pernah transaksi)
+
+berikut skema yang telah saya buat
+Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->string('username')->unique();
+            $table->string('no_hp')->nullable();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->string('role')->default('pengguna');
+            $table->rememberToken();
+            $table->timestamps();
+        });
+public function up(): void
+    {
+        Schema::create('wallet', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id')->constrained(
+                table: 'users',
+                indexName: 'wallet_user_id'
+            );
+            $table->integer('poin')->default(0);
+            $table->timestamps();
+        });
+    }
+Schema::create('produk', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama_produk');
+            $table->integer('harga_produk');
+            $table->integer('stok_produk');
+            $table->string('gambar_produk');
+            $table->string('deskripsi_produk');
+            $table->string('kategori_produk');
+            $table->string('terjual')->default(0);
+            $table->timestamps();
+        });
+Schema::create('keranjang', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id')->constrained(
+                table: 'users',
+                indexName: 'keranjang_user_id'
+            );
+            $table->string('status_keranjang')->default(0);
+        });
+Schema::create('keranjang_produk', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('keranjang_id');
+            $table->unsignedBigInteger('produk_id');
+            $table->integer('jumlah_barang');
+            $table->integer('subtotal');
+            $table->timestamps();
+
+            $table->foreign('keranjang_id')->references('id')->on('keranjang')->onDelete('cascade');
+            $table->foreign('produk_id')->references('id')->on('produk')->onDelete('cascade');
+        });
+        Schema::create('detail_transaksi', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('keranjang_id');
+            $table->unsignedBigInteger('produk_id');
+            $table->unsignedBigInteger('transaksi_id')->nullable();
+            $table->string('pembayaran');
+            $table->timestamps();
+
+            $table->foreign('keranjang_id')->references('id')->on('keranjang')->onDelete('cascade');
+            $table->foreign('produk_id')->references('id')->on('produk')->onDelete('cascade');
+            $table->foreign('transaksi_id')->references('id')->on('transaksi')->onDelete('cascade');
+        });
+        Schema::create('transaksi', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->integer('status_pesanan')->default(0);
+            $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+        });
+User:
+    public function keranjang()
+    {
+        return $this->hasMany(Keranjang::class);
+    }
+
+    public function transaksi()
+    {
+        return $this->hasMany(Transaksi::class);
+    }
+
+    public function wallet()
+    {
+        return $this->hasOne(Wallet::class);
+    }
+Produk:
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function produk()
+    {
+        return $this->belongsToMany(Produk::class, 'keranjang_produk')->withPivot('jumlah_barang', 'subtotal');
+    }
+
+    public function detail_transaksi()
+    {
+        return $this->belongsTo(DetailTransaksi::class);
+    }
+Keranjang;
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function produk()
+    {
+        return $this->belongsToMany(Produk::class, 'keranjang_produk')->withPivot('jumlah_barang', 'subtotal');
+    }
+
+    public function detail_transaksi()
+    {
+        return $this->belongsTo(DetailTransaksi::class);
+    }
+
+KeranjangProduk:
+    public function keranjang()
+    {
+        return $this->belongsTo(Keranjang::class);
+    }
+
+    public function produk()
+    {
+        return $this->belongsTo(Produk::class);
+    }
+
+
+DetailTransaksi:
+public function keranjang()
+public function produk()
+    {
+        return $this->hasMany(Produk::class);
+    }
+    public function keranjang()
+    {
+        return $this->hasOne(Keranjang::class);
+    }
+    public function transaksi()
+    {
+        return $this->belongsTo(Transaksi::class);
+    }
+}
+
+Transaksi:
+public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    //detail_transaksi
+    public function detail_transaksi()
+    {
+        return $this->hasMany(DetailTransaksi::class);
+    }
+
+controller pada keranjang:
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Keranjang;
+use App\Models\Produk;
+use App\Models\KeranjangProduk;
+use Illuminate\Support\Facades\Auth;
+
+class KeranjangController extends Controller
+{
+    public function index()
+    {
+        $keranjang = Keranjang::where('status_keranjang', '0')
+            ->where('user_id', Auth::id())
+            ->with('produk')
+            ->first();
+
+        $total = $keranjang ? $keranjang->produk->sum('pivot.subtotal') : 0;
+
+        return view('keranjang.index', compact('keranjang', 'total'));
+    }
+
+    public function store(Request $request)
+    {
+        $produk = Produk::find($request->produk_id);
+
+        $keranjang = Keranjang::firstOrCreate(
+            ['user_id' => Auth::id(), 'status_keranjang' => '0']
+        );
+
+        $keranjangProduk = $keranjang->produk()->where('produk_id', $request->produk_id)->first();
+
+        if ($keranjangProduk) {
+            $keranjangProduk->pivot->jumlah_barang += $request->jumlah_barang;
+            $keranjangProduk->pivot->subtotal += $produk->harga_produk * $request->jumlah_barang;
+            $keranjangProduk->pivot->save();
+        } else {
+            $keranjang->produk()->attach($request->produk_id, [
+                'jumlah_barang' => $request->jumlah_barang,
+                'subtotal' => $produk->harga_produk * $request->jumlah_barang
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Produk berhasil ditambahkan ke keranjang!');
+    }
+
+    public function update(Request $request, $id)
+{
+    // Cari keranjang dengan user yang sedang login dan status 0
+    $keranjang = Keranjang::where('user_id', Auth::id())->where('status_keranjang', '0')->firstOrFail();
+
+    // Cari produk dalam keranjang
+    $keranjangProduk = $keranjang->produk()->where('produk_id', $id)->firstOrFail();
+
+    // Update jumlah barang dan subtotal
+    $keranjangProduk->pivot->jumlah_barang = $request->jumlah_barang;
+    $keranjangProduk->pivot->subtotal = $keranjangProduk->harga_produk * $request->jumlah_barang;
+    $keranjangProduk->pivot->save();
+
+    return redirect()->back()->with('success', 'Jumlah barang berhasil diperbarui');
+}
+
+    public function destroy($produk_id)
+    {
+        $keranjang = Keranjang::where('user_id', Auth::id())
+            ->where('status_keranjang', '0')
+            ->first();
+
+        if ($keranjang) {
+            $keranjang->produk()->detach($produk_id);
+        }
+
+        return redirect()->back()->with('success', 'Produk berhasil dihapus dari keranjang!');
+    }
+
+    public function checkout()
+{
+    $user = Auth::user();
+    $keranjang = Keranjang::where('user_id', $user->id)->where('status_keranjang', '0')->firstOrFail();
+
+    // Update status keranjang menjadi '1'
+    $keranjang->update(['status_keranjang' => '1']);
+
+    // Redirect ke halaman pembuatan detail transaksi
+    return redirect()->route('detail_transaksi.create')->with('success', 'Checkout berhasil, lanjutkan ke transaksi.');
+}
+
+}

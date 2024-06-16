@@ -11,10 +11,7 @@ class Transaksi extends Model
 
 
     protected $table = 'transaksi';
-    protected $fillable = [
-        'total_transaksi',
-        'status_pesanan',
-    ];
+    protected $fillable = ['user_id', 'status_pesanan'];
 
     public function user()
     {
@@ -23,6 +20,6 @@ class Transaksi extends Model
     //detail_transaksi
     public function detail_transaksi()
     {
-        return $this->hasOne(DetailTransaksi::class);
+        return $this->hasMany(DetailTransaksi::class);
     }
 }

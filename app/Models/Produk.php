@@ -22,11 +22,11 @@ class Produk extends Model
 
     public function detail_transaksi()
     {
-        return $this->belongsTo(DetailTransaksi::class);
+        return $this->hasMany(DetailTransaksi::class);
     }
 
     public function keranjang()
     {
-        return $this->belongsTo(Keranjang::class);
+        return $this->belongsToMany(Keranjang::class, 'keranjang_produk')->withPivot('jumlah_barang', 'subtotal');
     }
 }

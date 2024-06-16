@@ -9,7 +9,10 @@ use App\Http\Controllers\BeritaDanTipsController;
 use App\Http\Controllers\JenisSampahController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\UserProdukController;
-
+use App\Http\Controllers\TransaksiController;
+use App\Http\Controllers\KeranjangController;
+use App\Http\Controllers\DetailTransaksiController;
+use App\Http\Controllers\AdminTransaksiController;
 
 
 Route::get('/', function () {
@@ -38,6 +41,7 @@ Route::middleware('auth')->group(function () {
     // Berita dan Tips
     Route::get('/berita', [BeritaDanTipsController::class, 'index'])->name('berita.index');
     Route::get('/berita/{id}', [BeritaDanTipsController::class, 'show'])->name('berita.show');
+
 });
 
 // Route khusus admin
@@ -64,9 +68,15 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Produk
     Route::get('/admin/products', [App\Http\Controllers\ProdukController::class, 'index'])->name('admin.products.index');
     Route::post('/admin/products', [App\Http\Controllers\ProdukController::class, 'store'])->name('admin.products.store');
-    Route::get('/admin/products/{product}/edit', [App\Http\Controllers\ProdukController::class, 'edit'])->name('admin.products.edit');
     Route::put('/admin/products/{product}', [App\Http\Controllers\ProdukController::class, 'update'])->name('admin.products.update');
     Route::delete('/admin/products/{product}', [App\Http\Controllers\ProdukController::class, 'destroy'])->name('admin.products.destroy');
+
+    // Transaksi
+    Route::get('admin/transaksi', [AdminTransaksiController::class, 'index'])->name('admin.transaksi.index');
+    Route::get('admin/transaksi/{id}', [AdminTransaksiController::class, 'show'])->name('admin.transaksi.show');
+    Route::put('admin/transaksi/{id}/konfirmasi', [AdminTransaksiController::class, 'konfirmasi'])->name('admin.transaksi.konfirmasi');
+    Route::delete('admin/transaksi/{id}', [AdminTransaksiController::class, 'destroy'])->name('admin.transaksi.destroy');
+
 });
 
 // Route khusus pengguna
@@ -78,6 +88,15 @@ Route::middleware(['auth', 'role:pengguna'])->group(function () {
     // User Produk
     Route::get('/products', [App\Http\Controllers\UserProduKController::class, 'index'])->name('user.products.index');
     Route::get('/products/{product}', [App\Http\Controllers\UserProduKController::class, 'show'])->name('user.products.show');
+    // Keranjang
+    Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang.index');
+    Route::post('/keranjang/store', [KeranjangController::class, 'store'])->name('keranjang.store');
+    Route::put('/keranjang/{id}', [KeranjangController::class, 'update'])->name('keranjang.update');
+    Route::delete('/keranjang/{produk}', [KeranjangController::class, 'destroy'])->name('keranjang.destroy');
+    Route::get('keranjang/checkout', [KeranjangController::class, 'checkout'])->name('keranjang.checkout');
+    // Transaksi
+    Route::get('detail_transaksi', [DetailTransaksiController::class, 'create'])->name('detail_transaksi.create');
+    Route::post('detail_transaksi', [DetailTransaksiController::class, 'store'])->name('detail_transaksi.store');
 });
 
 require __DIR__ . '/auth.php';

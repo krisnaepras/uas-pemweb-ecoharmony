@@ -38,7 +38,7 @@ class ProdukController extends Controller
             'kategori_produk' => 'required',
         ]);
 
-        $imageName = time().'.'.$request->gambar_produk->extension();
+        $imageName = time() . '.' . $request->gambar_produk->extension();
         $request->gambar_produk->move(public_path('images'), $imageName);
 
         Produk::create([
@@ -67,7 +67,7 @@ class ProdukController extends Controller
      */
     public function edit(Produk $product)
     {
-        return view('admin.products.edit', compact('product'));
+        //
     }
 
     /**
@@ -85,7 +85,7 @@ class ProdukController extends Controller
         ]);
 
         if ($request->hasFile('gambar_produk')) {
-            $imageName = time().'.'.$request->gambar_produk->extension();
+            $imageName = time() . '.' . $request->gambar_produk->extension();
             $request->gambar_produk->move(public_path('images'), $imageName);
             $product->gambar_produk = $imageName;
         }

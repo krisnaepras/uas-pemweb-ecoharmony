@@ -10,19 +10,16 @@ class DetailTransaksi extends Model
     use HasFactory;
 
     protected $table = 'detail_transaksi';
-    protected $fillable = [
-        'subtotal',
-        'total',
-    ];
+    protected $fillable = ['keranjang_id', 'produk_id', 'transaksi_id', 'pembayaran'];
 
 
     public function produk()
     {
-        return $this->hasMany(Produk::class);
+        return $this->belongsTo(Produk::class);
     }
     public function keranjang()
     {
-        return $this->hasMany(Keranjang::class);
+        return $this->belongsTo(Keranjang::class);
     }
     public function transaksi()
     {
