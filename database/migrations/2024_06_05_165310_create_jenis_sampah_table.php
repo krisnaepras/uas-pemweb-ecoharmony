@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('jenis_sampah', function (Blueprint $table) {
             $table->id();
             $table->string('jenis_sampah');
-            $table->float('poin_sampah');
+            $table->integer('poin_sampah');
             $table->timestamps();
         });
     }

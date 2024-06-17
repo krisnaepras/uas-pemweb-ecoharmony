@@ -10,7 +10,7 @@ class DetailTransaksi extends Model
     use HasFactory;
 
     protected $table = 'detail_transaksi';
-    protected $fillable = ['keranjang_id', 'produk_id', 'transaksi_id', 'pembayaran'];
+    protected $fillable = ['keranjang_id', 'produk_id', 'transaksi_id', 'jumlah_barang', 'subtotal'];
 
 
     public function produk()

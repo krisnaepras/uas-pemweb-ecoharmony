@@ -70,12 +70,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/products', [App\Http\Controllers\ProdukController::class, 'store'])->name('admin.products.store');
     Route::put('/admin/products/{product}', [App\Http\Controllers\ProdukController::class, 'update'])->name('admin.products.update');
     Route::delete('/admin/products/{product}', [App\Http\Controllers\ProdukController::class, 'destroy'])->name('admin.products.destroy');
-
     // Transaksi
-    Route::get('admin/transaksi', [AdminTransaksiController::class, 'index'])->name('admin.transaksi.index');
-    Route::get('admin/transaksi/{id}', [AdminTransaksiController::class, 'show'])->name('admin.transaksi.show');
-    Route::put('admin/transaksi/{id}/konfirmasi', [AdminTransaksiController::class, 'konfirmasi'])->name('admin.transaksi.konfirmasi');
-    Route::delete('admin/transaksi/{id}', [AdminTransaksiController::class, 'destroy'])->name('admin.transaksi.destroy');
+    Route::get('/admin/transaksi', [AdminTransaksiController::class, 'indexAdmin'])->name('admin.transaksi.index');
+    Route::get('/admin/transaksi/{id}', [AdminTransaksiController::class, 'showAdmin'])->name('admin.transaksi.show');
+    Route::delete('/admin/transaksi/{id}', [AdminTransaksiController::class, 'destroy'])->name('admin.transaksi.destroy');
 
 });
 
@@ -95,8 +93,10 @@ Route::middleware(['auth', 'role:pengguna'])->group(function () {
     Route::delete('/keranjang/{produk}', [KeranjangController::class, 'destroy'])->name('keranjang.destroy');
     Route::get('keranjang/checkout', [KeranjangController::class, 'checkout'])->name('keranjang.checkout');
     // Transaksi
-    Route::get('detail_transaksi', [DetailTransaksiController::class, 'create'])->name('detail_transaksi.create');
-    Route::post('detail_transaksi', [DetailTransaksiController::class, 'store'])->name('detail_transaksi.store');
+    Route::get('/checkout', [TransaksiController::class, 'create'])->name('transaksi.create');
+    Route::post('/checkout', [TransaksiController::class, 'store'])->name('transaksi.store');
+    Route::get('/transaksi/status', [TransaksiController::class, 'show'])->name('transaksi.show');
+    Route::get('/transaksi/history', [TransaksiController::class, 'index'])->name('transaksi.history');
 });
 
 require __DIR__ . '/auth.php';

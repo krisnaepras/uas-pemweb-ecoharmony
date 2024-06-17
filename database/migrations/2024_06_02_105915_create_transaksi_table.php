@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //FK: detail_transaksi_id(1to1)
         Schema::create('transaksi', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
+            $table->integer('total_harga');
+            $table->string('pembayaran');
             $table->integer('status_pesanan')->default(0);
             $table->timestamps();
 

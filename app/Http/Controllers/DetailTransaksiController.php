@@ -11,33 +11,44 @@ use Illuminate\Support\Facades\Auth;
 
 class DetailTransaksiController extends Controller
 {
-    public function create()
+    public function index()
     {
-        $user = Auth::user();
-        $keranjang = Keranjang::where('user_id', $user->id)->where('status_keranjang', '1')->firstOrFail();
-
-        $total = $keranjang->produk->sum('pivot.subtotal');
-
-        return view('detail_transaksi.create', compact('keranjang', 'total'));
+        $transaki = Transaksi::where('user_id', Auth::id())->get();
+        $detailTransaksi = DetailTransaksi::where('transaksi_id', $transaki->id)->get();
+        return view('transaksi.index', compact('transaki', 'detailTransaksi'));
     }
 
+    //indexAdmin
+    public function indexAdmin()
+    {
+        $transaksi = Transaksi::all();
+        $detailTransaksi = DetailTransaksi::all();
+        return view('admin.transaksi.index', compact('transaksi', 'detailTransaksi'));
+    }
+
+    public function create()
+    {
+        return view('transaksi.create');
+    }
+
+    // Untuk menyimpan transaksi baru
     public function store(Request $request)
     {
-        $user = Auth::user();
-        $keranjang = Keranjang::where('user_id', $user->id)->where('status_keranjang', '1')->firstOrFail();
-        $total = $keranjang->produk->sum('pivot.subtotal');
+        $request->validate([
+            'pembayaran' => ['required', 'in:cash,poin'],
+        ]);
 
-        if ($request->pembayaran == 'poin' && $user->wallet->poin >= $total) {
-            $user->wallet->poin -= $total;
-            $user->wallet->save();
-        } elseif ($request->pembayaran == 'cash') {
-            // Logika pembayaran cash
-        } else {
-            return redirect()->back()->with('error', 'Poin tidak mencukupi untuk pembayaran.');
-        }
+
+
+        $keranjang = Keranjang::where('status_keranjang', '0')
+            ->where('user_id', Auth::id())
+            ->with('produk')
+            ->first();
 
         $transaksi = Transaksi::create([
-            'user_id' => $user->id,
+            'user_id' => Auth::id(),
+            'total_harga' => $keranjang ? $keranjang->produk->sum('pivot.subtotal') : 0,
+            'pembayaran' => $request->pembayaran,
             'status_pesanan' => 0,
         ]);
 
@@ -46,12 +57,41 @@ class DetailTransaksiController extends Controller
                 'keranjang_id' => $keranjang->id,
                 'produk_id' => $produk->id,
                 'transaksi_id' => $transaksi->id,
-                'pembayaran' => $request->pembayaran,
+                'jumlah_barang' => $produk->pivot->jumlah_barang,
+                'subtotal' => $produk->pivot->subtotal,
             ]);
         }
+    }
 
-        $keranjang->update(['status_keranjang' => '1']);
+    public function show()
+    {
+        $transaksi = Transaksi::where('status_pesanan', 0)->get();
+        $detailTransaksi = DetailTransaksi::where('transaksi_id', $transaksi->id)->get();
 
-        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil dibuat.');
+        return view('transaksi.show', compact('transaksi', 'detailTransaksi'));
+    }
+
+    // Untuk admin menyetujui pesanan
+    public function showAdmin()
+    {
+        $transaksi = Transaksi::where('status_pesanan', 0)->get();
+        $detailTransaksi = DetailTransaksi::where('transaksi_id',)->get();
+        return view('admin.transaksi', compact('transaksi', 'detailTransaksi'));
+    }
+
+    public function updateStatus(Request $request)
+    {
+        $transaksi = Transaksi::findOrFail($request->transaksi_id);
+        $transaksi->status_pesanan = 1;
+        $transaksi->save();
+
+        return redirect()->route('admin.transaksi')->with('success', 'Status pesanan berhasil diperbarui.');
+    }
+
+    public function destroy($id)
+    {
+        $transaksi = Transaksi::findOrFail($id);
+        $transaksi->delete();
+        return redirect()->route('admin.transaksi');
     }
 }

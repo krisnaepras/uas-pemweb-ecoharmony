@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('keranjang_id');
             $table->unsignedBigInteger('produk_id');
+            $table->integer('jumlah_barang');
+            $table->integer('subtotal');
             $table->unsignedBigInteger('transaksi_id')->nullable();
-            $table->string('pembayaran');
             $table->timestamps();
 
             $table->foreign('keranjang_id')->references('id')->on('keranjang')->onDelete('cascade');
