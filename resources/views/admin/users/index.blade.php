@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.dashboard')
+
+@section('content')
     <div class="container">
         <h1>Daftar Pengguna</h1>
         @if (session('success'))
@@ -36,4 +38,4 @@
             </tbody>
         </table>
     </div>
-</x-app-layout>
+@endsection

@@ -48,7 +48,7 @@ class KeranjangController extends Controller
         // $keranjang->update(['status_keranjang' => '1']);
 
         // Redirect langsung ke halaman detail transaksi setelah checkout
-        return redirect()->route('detail_transaksi.create')->with('success', 'Checkout berhasil, lanjutkan ke transaksi.');
+        return redirect()->route('user.products.index')->with('success', 'Checkout berhasil, lanjutkan ke transaksi.');
     }
 
 

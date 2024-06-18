@@ -14,13 +14,13 @@ class BankSampahController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        // Menampilkan data bank sampah yang belum dikonfirmasi
-        $banksampahs = BankSampah::where('status_setor', '0')->with('user')->get();
-        $jenisSampah = JenisSampah::all();
-        return view('banksampah.index', compact('banksampahs'));
-    }
+    // public function index()
+    // {
+    //     // Menampilkan data bank sampah yang belum dikonfirmasi
+    //     $banksampahs = BankSampah::where('status_setor', '0')->with('user')->get();
+    //     $jenisSampah = JenisSampah::all();
+    //     return view('banksampah.index', compact('banksampahs'));
+    // }
 
     /**
      * Show the form for creating a new resource.

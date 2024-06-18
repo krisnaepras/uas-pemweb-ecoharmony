@@ -1,51 +1,16 @@
-{{-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>User Dashboard</title>
-</head>
-<body>
-    <h1>Welcome, User!</h1>
-    <form method="POST" action="{{ route('logout') }}">
-        @csrf
-
-        <x-dropdown-link :href="route('logout')"
-                onclick="event.preventDefault();
-                            this.closest('form').submit();">
-            {{ __('Log Out') }}
-        </x-dropdown-link>
-    </form>
-</body>
-</html> --}}
-
 <x-app-layout>
-    <section id="hero" class="h-screen flex items-center">
-        <div class="container mx-auto flex flex-col md:flex-row items-center">
-            <!-- Left Side: Text Content -->
-            <div class="flex-1 text-center md:text-left p-8">
-                <h1 class="text-4xl md:text-6xl font-bold mb-4 font-serif text-green-800">Selamat Datang di Desa Pintar
-                </h1>
-                <p class="text-lg md:text-xl mb-8 font-extralight">Dengan Smart Village, kami membawa solusi teknologi
-                    untuk mengembangkan potensi desa dan menciptakan lingkungan yang lebih baik.</p>
-                <div class="inline-block align-baseline space-y-4 md:space-y-0 md:space-x-4">
-                    <input type="email" class="rounded-lg py-2 px-4 text-gray-700 " name="email" placeholder="Email">
-                    <button
-                        class="rounded-lg bg-green-800 hover:bg-green-300 text-white font-bold py-2 px-4">Login</button>
-                </div>
-            </div>
-            <!-- Right Side: Image -->
-            <div class="flex-1 p-8">
-                <img src="https://lukaszadam.com/images/free-illustrations/package_service.svg" alt="Deskripsi Gambar"
-                    class="w-full h-auto rounded-lg">
-            </div>
+    <section id="hero" class="relative h-screen flex items-center justify-center bg-black">
+        <div class="absolute inset-0 z-10 bg-black opacity-50"></div>
+            <img src="{{ asset('images/pegunungan.jpg') }}" alt="Banner" class="absolute inset-0 h-full w-full object-cover">
+        <div class="relative z-20 text-center text-white px-4 sm:px-6 lg:px-8">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold font-serif">Selamat Datang di Eco Harmony</h1>
+            <p class="mt-4 text-l font-sans">sebuah inisiatif dari Desa Janti, Kecamatan Mojoagung, Kota Jombang. Website ini dirancang untuk mendukung dan memberdayakan masyarakat dengan fitur-fitur unggulannya. Fitur toko kami menyediakan berbagai produk lokal hasil karya warga desa, mendukung ekonomi lokal dan pelaku usaha kecil. Melalui fitur bank sampah, warga dapat menukar sampah yang mereka kumpulkan dengan poin yang bisa digunakan untuk berbelanja atau keperluan lainnya. Selain itu, kami juga menyediakan berita terkini seputar kegiatan, program, dan perkembangan di Desa Janti, memastikan Anda selalu terinformasi dengan baik. Bergabunglah dengan kami dalam menciptakan harmoni antara masyarakat dan lingkungan di Eco Harmony.</p>
         </div>
     </section>
 
-    <section id="jelajah" class="py-16 bg-green-200 flex flex-col items-center">
+    <section id="jelajah" class="p-16 bg-green-200 flex flex-col items-center">
         <div class="container mx-auto px-4">
-            <h2 class="text-4xl md:text-6xl font-bold text-center mb-12 text-green-800 drop-shadow-lg">Berita Terbaru
+            <h2 class="text-4xl md:text-6xl font-bold text-center mb-12 text-green-800 drop-shadow-lg font-serif">Berita Terbaru
             </h2>
 
             <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -107,10 +72,10 @@
     </section>
 
 
-    <section id="toko" class="container bg-green-200 mx-auto mt-8">
-        <h2 class="text-4xl md:text-6xl font-bold text-center mb-12 text-green-800 drop-shadow-lg">Produk Unggulan</h2>
-        <div class="relative w-full overflow-hidden rounded-lg shadow-lg">
-            <div class="relative h-96 md:h-[40rem]">
+    <section id="toko" class="container bg-green-200 mx-auto mt-auto p-12">
+        <h2 class="text-4xl md:text-6xl font-bold text-center mb-12 text-green-800 font-serif drop-shadow-lg">Produk Unggulan</h2>
+        <div class="relative w-full overflow-hidden rounded-lg p-12">
+            <div class="relative h-96 md:h-[40rem] p-8">
                 <!-- Slides -->
                 <div class="absolute inset-0 transition-opacity duration-500 ease-linear opacity-100" id="slide1">
                     <img src="https://sidedi-id.s3-id-jkt-1.kilatstorage.id/ledig/sukawera/profile/products/umi-azmi.jpg"
@@ -125,19 +90,6 @@
                         alt="Slide 3" class="w-full h-full object-cover">
                 </div>
             </div>
-
-            <!-- Navigation Buttons -->
-            <button
-                class="absolute top-1/2 left-0 transform -translate-y-1/2 px-4 py-2 bg-gray-800 bg-opacity-50 text-white rounded-r focus:outline-none"
-                onclick="prevSlide()">
-                &lt;
-            </button>
-            <button
-                class="absolute top-1/2 right-0 transform -translate-y-1/2 px-4 py-2 bg-gray-800 bg-opacity-50 text-white rounded-l focus:outline-none"
-                onclick="nextSlide()">
-                &gt;
-            </button>
-        </div>
 
         <div class="container w-full py-16 px-10 text-center">
             <button id="Toko" class="w-44 bg-green-800 text-white rounded-lg p-4">Lihat Selengkapnya</button>

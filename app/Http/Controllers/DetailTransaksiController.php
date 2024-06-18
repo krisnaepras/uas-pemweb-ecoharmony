@@ -34,6 +34,7 @@ class DetailTransaksiController extends Controller
             'total_harga' => $total_harga,
             'wallet' => $wallet,
         ]);
+
     }
 
 

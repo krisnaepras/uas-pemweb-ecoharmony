@@ -33,6 +33,19 @@
         <main class="bg-white">
             {{ $slot }}
         </main>
+
+        <footer class="bg-gray-800 text-gray-300 py-4 h-28">
+            <div class="container mx-auto flex justify-between items-center px-4">
+                <div>
+                    <p class="text-lg font-bold">Kelompok 7 Mata Kuliah Pemrograman Web</p>
+                    <p class="text-sm">Sistem Informasi UPN "Veteran" Jawa Timur</p>
+                </div>
+                <div>
+                    <p class="text-sm">©️ 2024 Hak Cipta</p>
+                </div>
+            </div>
+        </footer>
+
     </div>
 </body>
 

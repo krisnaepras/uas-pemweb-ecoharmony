@@ -28,7 +28,7 @@
                                     <input type="hidden" name="transaksi_id" value="{{ $transaksi->id }}">
                                     <button type="submit" class="btn btn-success">Konfirmasi</button>
                                 </form>
-                                <form action="{{ route('admin.transaksi.destroy', $transaksi->id) }}" method="POST"
+                                <form action="{{ route('admin.Ztransaksi.destroy', $transaksi->id) }}" method="POST"
                                     class="d-inline">
                                     @csrf
                                     @method('DELETE')

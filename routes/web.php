@@ -12,7 +12,6 @@ use App\Http\Controllers\UserProdukController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\KeranjangController;
 use App\Http\Controllers\DetailTransaksiController;
-use App\Http\Controllers\AdminTransaksiController;
 
 
 Route::get('/', function () {
@@ -66,10 +65,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/berita', [BeritaDanTipsController::class, 'store'])->name('admin.berita.store');
     Route::delete('/admin/berita/{id}', [BeritaDanTipsController::class, 'destroy'])->name('admin.berita.destroy');
     // Produk
-    Route::get('/admin/products', [App\Http\Controllers\ProdukController::class, 'index'])->name('admin.products.index');
-    Route::post('/admin/products', [App\Http\Controllers\ProdukController::class, 'store'])->name('admin.products.store');
-    Route::put('/admin/products/{product}', [App\Http\Controllers\ProdukController::class, 'update'])->name('admin.products.update');
-    Route::delete('/admin/products/{product}', [App\Http\Controllers\ProdukController::class, 'destroy'])->name('admin.products.destroy');
+    Route::get('/admin/products', [ProdukController::class, 'index'])->name('admin.products.index');
+    Route::post('/admin/products', [ProdukController::class, 'store'])->name('admin.products.store');
+    Route::put('/admin/products/{product}', [ProdukController::class, 'update'])->name('admin.products.update');
+    Route::delete('/admin/products/{product}', [ProdukController::class, 'destroy'])->name('admin.products.destroy');
     // Transaksi
     Route::get('/admin/transaksi', [TransaksiController::class, 'indexAdmin'])->name('admin.transaksi.index');
     Route::get('/admin/konfirmasi-transaksi', [TransaksiController::class, 'showAdmin'])->name('admin.transaksi.show');
@@ -85,8 +84,8 @@ Route::middleware(['auth', 'role:pengguna'])->group(function () {
     Route::get('/banksampah', [BankSampahController::class, 'create'])->name('banksampah.create');
     Route::post('/banksampah', [BankSampahController::class, 'store'])->name('banksampah.store');
     // User Produk
-    Route::get('/products', [App\Http\Controllers\UserProduKController::class, 'index'])->name('user.products.index');
-    Route::get('/products/{product}', [App\Http\Controllers\UserProduKController::class, 'show'])->name('user.products.show');
+    Route::get('/products', [UserProduKController::class, 'index'])->name('user.products.index');
+    Route::get('/products/{product}', [UserProduKController::class, 'show'])->name('user.products.show');
     // Keranjang
     Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang.index');
     Route::post('/keranjang/store', [KeranjangController::class, 'store'])->name('keranjang.store');
