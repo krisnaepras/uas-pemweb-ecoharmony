@@ -31,7 +31,8 @@
                             </td>
                             <td>{{ $produk->pivot->subtotal }}</td>
                             <td>
-                                <form action="{{ route('keranjang.destroy', $produk->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus produk ini dari keranjang?')">
+                                <form action="{{ route('keranjang.destroy', $produk->id) }}" method="POST"
+                                    onsubmit="return confirm('Apakah Anda yakin ingin menghapus produk ini dari keranjang?')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger">Hapus</button>
@@ -44,9 +45,9 @@
             </table>
             <div class="mt-3">
                 <h4>Total: {{ $total }}</h4>
-                <form action="{{ route('detail_transaksi.store') }}" method="POST">
+                <form action="{{ route('transaksi.create') }}" method="POST">
                     @csrf
-                    <input type="hidden" name="keranjang_id" value="{{ $keranjang->id }}">
+                    {{-- <input type="hidden" name="keranjang_id" value="{{ $keranjang->id }}"> --}}
                     <button type="submit" class="btn btn-primary">Checkout</button>
                 </form>
 

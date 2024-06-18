@@ -7,29 +7,36 @@ use App\Models\DetailTransaksi;
 use App\Models\Keranjang;
 use App\Models\Transaksi;
 use App\Models\User;
+use App\Models\Wallet;
 use Illuminate\Support\Facades\Auth;
 
 class DetailTransaksiController extends Controller
 {
-    public function index()
-    {
-        $transaki = Transaksi::where('user_id', Auth::id())->get();
-        $detailTransaksi = DetailTransaksi::where('transaksi_id', $transaki->id)->get();
-        return view('transaksi.index', compact('transaki', 'detailTransaksi'));
-    }
 
-    //indexAdmin
-    public function indexAdmin()
-    {
-        $transaksi = Transaksi::all();
-        $detailTransaksi = DetailTransaksi::all();
-        return view('admin.transaksi.index', compact('transaksi', 'detailTransaksi'));
-    }
 
     public function create()
     {
-        return view('transaksi.create');
+        // Mendapatkan keranjang yang belum diproses
+        $keranjang = Keranjang::where('status_keranjang', '0')
+            ->where('user_id', Auth::id())
+            ->with('produk')
+            ->first();
+
+        // Menghitung total harga keranjang
+        $total_harga = $keranjang ? $keranjang->produk->sum('pivot.subtotal') : 0;
+
+        // Mendapatkan wallet pengguna
+        $wallet = Wallet::where('user_id', Auth::id())->first();
+
+        // Mengirim data ke view
+        return view('transaksi.create', [
+            'keranjang' => $keranjang,
+            'total_harga' => $total_harga,
+            'wallet' => $wallet,
+        ]);
     }
+
+
 
     // Untuk menyimpan transaksi baru
     public function store(Request $request)
@@ -38,16 +45,26 @@ class DetailTransaksiController extends Controller
             'pembayaran' => ['required', 'in:cash,poin'],
         ]);
 
-
-
         $keranjang = Keranjang::where('status_keranjang', '0')
             ->where('user_id', Auth::id())
             ->with('produk')
             ->first();
 
+        $total_harga = $keranjang ? $keranjang->produk->sum('pivot.subtotal') : 0;
+
+        if ($request->pembayaran == 'poin') {
+            $wallet = Wallet::where('user_id', Auth::id())->first();
+            if ($wallet->poin < $total_harga) {
+                return redirect()->back()->withErrors(['pembayaran' => 'Poin tidak mencukupi untuk melakukan transaksi ini.']);
+            }
+            // Kurangi poin di wallet
+            $wallet->poin -= $total_harga;
+            $wallet->save();
+        }
+
         $transaksi = Transaksi::create([
             'user_id' => Auth::id(),
-            'total_harga' => $keranjang ? $keranjang->produk->sum('pivot.subtotal') : 0,
+            'total_harga' => $total_harga,
             'pembayaran' => $request->pembayaran,
             'status_pesanan' => 0,
         ]);
@@ -61,37 +78,7 @@ class DetailTransaksiController extends Controller
                 'subtotal' => $produk->pivot->subtotal,
             ]);
         }
-    }
 
-    public function show()
-    {
-        $transaksi = Transaksi::where('status_pesanan', 0)->get();
-        $detailTransaksi = DetailTransaksi::where('transaksi_id', $transaksi->id)->get();
-
-        return view('transaksi.show', compact('transaksi', 'detailTransaksi'));
-    }
-
-    // Untuk admin menyetujui pesanan
-    public function showAdmin()
-    {
-        $transaksi = Transaksi::where('status_pesanan', 0)->get();
-        $detailTransaksi = DetailTransaksi::where('transaksi_id',)->get();
-        return view('admin.transaksi', compact('transaksi', 'detailTransaksi'));
-    }
-
-    public function updateStatus(Request $request)
-    {
-        $transaksi = Transaksi::findOrFail($request->transaksi_id);
-        $transaksi->status_pesanan = 1;
-        $transaksi->save();
-
-        return redirect()->route('admin.transaksi')->with('success', 'Status pesanan berhasil diperbarui.');
-    }
-
-    public function destroy($id)
-    {
-        $transaksi = Transaksi::findOrFail($id);
-        $transaksi->delete();
-        return redirect()->route('admin.transaksi');
+        return redirect()->route('transaksi.show')->with('success', 'Transaksi berhasil dibuat.');
     }
 }

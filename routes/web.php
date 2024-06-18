@@ -71,9 +71,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::put('/admin/products/{product}', [App\Http\Controllers\ProdukController::class, 'update'])->name('admin.products.update');
     Route::delete('/admin/products/{product}', [App\Http\Controllers\ProdukController::class, 'destroy'])->name('admin.products.destroy');
     // Transaksi
-    Route::get('/admin/transaksi', [AdminTransaksiController::class, 'indexAdmin'])->name('admin.transaksi.index');
-    Route::get('/admin/transaksi/{id}', [AdminTransaksiController::class, 'showAdmin'])->name('admin.transaksi.show');
-    Route::delete('/admin/transaksi/{id}', [AdminTransaksiController::class, 'destroy'])->name('admin.transaksi.destroy');
+    Route::get('/admin/transaksi', [TransaksiController::class, 'indexAdmin'])->name('admin.transaksi.index');
+    Route::get('/admin/konfirmasi-transaksi', [TransaksiController::class, 'showAdmin'])->name('admin.transaksi.show');
+    Route::post('/transaksi/updateStatus', [TransaksiController::class, 'updateStatus'])->name('admin.transaksi.updateStatus');
+    Route::delete('/admin/transaksi/{id}', [TransaksiController::class, 'destroy'])->name('admin.transaksi.destroy');
 
 });
 
@@ -93,8 +94,8 @@ Route::middleware(['auth', 'role:pengguna'])->group(function () {
     Route::delete('/keranjang/{produk}', [KeranjangController::class, 'destroy'])->name('keranjang.destroy');
     Route::get('keranjang/checkout', [KeranjangController::class, 'checkout'])->name('keranjang.checkout');
     // Transaksi
-    Route::get('/checkout', [TransaksiController::class, 'create'])->name('transaksi.create');
-    Route::post('/checkout', [TransaksiController::class, 'store'])->name('transaksi.store');
+    Route::get('/checkout', [DetailTransaksiController::class, 'create'])->name('transaksi.create');
+    Route::post('/checkout', [DetailTransaksiController::class, 'store'])->name('transaksi.store');
     Route::get('/transaksi/status', [TransaksiController::class, 'show'])->name('transaksi.show');
     Route::get('/transaksi/history', [TransaksiController::class, 'index'])->name('transaksi.history');
 });

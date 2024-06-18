@@ -1,32 +1,44 @@
 <x-app-layout>
     <div class="container">
-        <h2>Detail Transaksi</h2>
-        <h3>Nama Pengguna: {{ $transaksi->user->name }}</h3>
-        <h4>Status: {{ $transaksi->status_pesanan == 0 ? 'Diproses' : 'Selesai' }}</h4>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Nama Produk</th>
-                    <th>Harga</th>
-                    <th>Jumlah</th>
-                    <th>Subtotal</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($transaksi->detail_transaksi as $detail)
+        <h1>Daftar Transaksi Belum Disetujui</h1>
+
+        @if ($transaksi->isEmpty())
+            <p>Tidak ada transaksi yang ditemukan.</p>
+        @else
+            <table class="table">
+                <thead>
                     <tr>
-                        <td>{{ $detail->produk->nama_produk }}</td>
-                        <td>{{ $detail->produk->harga_produk }}</td>
-                        <td>{{ $detail->produk->pivot->jumlah_barang }}</td>
-                        <td>{{ $detail->produk->pivot->subtotal }}</td>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Total Harga</th>
+                        <th>Pembayaran</th>
+                        <th>Aksi</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
-        <form action="{{ route('admin.transaksi.konfirmasi', $transaksi->id) }}" method="POST">
-            @csrf
-            @method('PUT')
-            <button type="submit" class="btn btn-success">Konfirmasi</button>
-        </form>
+                </thead>
+                <tbody>
+                    @foreach ($transaksi as $transaksi)
+                        <tr>
+                            <td>{{ $transaksi->id }}</td>
+                            <td>{{ $transaksi->user->name }}</td>
+                            <td>{{ number_format($transaksi->total_harga, 2) }}</td>
+                            <td>{{ $transaksi->pembayaran }}</td>
+                            <td>
+                                <form action="{{ route('admin.transaksi.updateStatus') }}" method="POST" class="d-inline">
+                                    @csrf
+                                    <input type="hidden" name="transaksi_id" value="{{ $transaksi->id }}">
+                                    <button type="submit" class="btn btn-success">Konfirmasi</button>
+                                </form>
+                                <form action="{{ route('admin.transaksi.destroy', $transaksi->id) }}" method="POST"
+                                    class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger">Hapus</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
     </div>
 </x-app-layout>

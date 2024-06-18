@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="container">
-        <h1>History Transaksi</h1>
+        <h1>Transaksi Belum Disetujui</h1>
 
         @if ($transaksi->isEmpty())
             <p>Tidak ada transaksi yang ditemukan.</p>
