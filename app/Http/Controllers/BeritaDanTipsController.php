@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BeritaDanTips;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Produk;
 
 class BeritaDanTipsController extends Controller
 {
@@ -15,21 +16,22 @@ class BeritaDanTipsController extends Controller
     }
 
     public function adminIndex()
-{
-    $beritas = BeritaDanTips::all();
-    return view('admin.berita.adminIndex', compact('beritas'));
-}
+    {
+        $beritas = BeritaDanTips::all();
+        return view('admin.berita.adminIndex', compact('beritas'));
+    }
 
     public function show($id)
     {
         $berita = BeritaDanTips::findOrFail($id);
         return view('berita.show', compact('berita'));
     }
-
-    public function create()
+    public function showAdmin($id)
     {
-        return view('admin.berita.create');
+        $beritaAdmin = BeritaDanTips::findOrFail($id);
+        return view('admin.berita.show', compact('beritaAdmin'));
     }
+
 
     public function store(Request $request)
     {
@@ -61,4 +63,6 @@ class BeritaDanTipsController extends Controller
         $berita->delete();
         return redirect()->route('berita.index');
     }
+
+    
 }

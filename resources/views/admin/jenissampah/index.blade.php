@@ -1,52 +1,39 @@
-<x-app-layout>
-    <div class="container">
-        <h1>Kelola Jenis Sampah</h1>
+@extends('layouts.dashboard')
+
+@section('content')
+    <div class="container mx-auto p-6 font-poppins">
+        <h1 class="text-3xl font-bold mb-6 text-center text-gray-800 font-serif">Kelola Jenis Sampah</h1>
 
         @if (session('success'))
-            <div class="alert alert-success">
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
                 {{ session('success') }}
             </div>
         @endif
 
-        <button class="btn btn-primary" id="toggleForm">Tambah Data Baru</button>
-
-        <div id="formContainer" style="display: none; margin-top: 20px;">
-            <form action="{{ route('admin.jenis-sampah.store') }}" method="POST">
-                @csrf
-                <div class="mb-3">
-                    <label for="jenis_sampah" class="form-label">Jenis Sampah</label>
-                    <input type="text" class="form-control" id="jenis_sampah" name="jenis_sampah" required>
-                </div>
-                <div class="mb-3">
-                    <label for="poin_sampah" class="form-label">Poin Sampah</label>
-                    <input type="number" class="form-control" id="poin_sampah" name="poin_sampah" required>
-                </div>
-                <button type="submit" class="btn btn-success">Submit</button>
-            </form>
-        </div>
-
-        <table class="table mt-5">
-            <thead>
+        <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden border border-gray-300">
+            <thead class="bg-gray-800 text-white">
                 <tr>
-                    <th scope="col">Jenis Sampah</th>
-                    <th scope="col">Poin Sampah</th>
-                    <th scope="col">Aksi</th>
+                    <th class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Jenis Sampah</th>
+                    <th class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Poin Sampah</th>
+                    <th class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider" style="width: 200px;">Aksi
+                    </th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="text-gray-700">
                 @foreach ($jenisSampah as $sampah)
-                    <tr>
-                        <td>{{ $sampah->jenis_sampah }}</td>
-                        <td>{{ $sampah->poin_sampah }}</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm editButton" data-id="{{ $sampah->id }}"
-                                data-jenis_sampah="{{ $sampah->jenis_sampah }}"
+                    <tr class="border-b">
+                        <td class="px-6 py-4 text-center whitespace-nowrap">{{ $sampah->jenis_sampah }}</td>
+                        <td class="px-6 py-4 text-center whitespace-nowrap">{{ $sampah->poin_sampah }}</td>
+                        <td class="px-6 py-4 text-center whitespace-nowrap">
+                            <button
+                                class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-3 rounded-full editButton"
+                                data-id="{{ $sampah->id }}" data-jenis_sampah="{{ $sampah->jenis_sampah }}"
                                 data-poin_sampah="{{ $sampah->poin_sampah }}">Edit</button>
                             <form action="{{ route('admin.jenis-sampah.destroy', $sampah->id) }}" method="POST"
-                                class="d-inline">
+                                class="inline bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-full">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm"
+                                <button type="submit"
                                     onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Delete</button>
                             </form>
                         </td>
@@ -54,16 +41,37 @@
                 @endforeach
             </tbody>
         </table>
+        <button id="toggleForm"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 mb-4">Tambah Data
+            Baru</button>
+
+        <div id="formContainer" class="hidden">
+            <form action="{{ route('admin.jenis-sampah.store') }}" method="POST">
+                @csrf
+                <div class="mb-4">
+                    <label for="jenis_sampah" class="block text-sm font-medium text-gray-700">Jenis Sampah</label>
+                    <input type="text" id="jenis_sampah" name="jenis_sampah"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                        required>
+                </div>
+                <div class="mb-4">
+                    <label for="poin_sampah" class="block text-sm font-medium text-gray-700">Poin Sampah</label>
+                    <input type="number" id="poin_sampah" name="poin_sampah"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                        required>
+                </div>
+                <div class="bg-green-600 hover:bg-green-700 text-center text-white font-bold py-2 px-4 rounded"
+                    style="width: 120px;">
+                    <button type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script>
         document.getElementById('toggleForm').addEventListener('click', function() {
             var formContainer = document.getElementById('formContainer');
-            if (formContainer.style.display === 'none') {
-                formContainer.style.display = 'block';
-            } else {
-                formContainer.style.display = 'none';
-            }
+            formContainer.classList.toggle('hidden');
         });
 
         document.querySelectorAll('.editButton').forEach(button => {
@@ -73,7 +81,7 @@
                 var poin_sampah = this.getAttribute('data-poin_sampah');
 
                 var formContainer = document.getElementById('formContainer');
-                formContainer.style.display = 'block';
+                formContainer.classList.remove('hidden');
 
                 var form = document.createElement('form');
                 form.action = '/admin/jenis-sampah/' + id;
@@ -92,24 +100,29 @@
                 form.appendChild(methodField);
 
                 var jenisSampahField = document.createElement('div');
-                jenisSampahField.className = 'mb-3';
+                jenisSampahField.className = 'mb-4';
                 jenisSampahField.innerHTML = `
-                    <label for="jenis_sampah" class="form-label">Jenis Sampah</label>
-                    <input type="text" class="form-control" id="jenis_sampah" name="jenis_sampah" value="${jenis_sampah}" required>
+                    <label for="jenis_sampah" class="block text-sm font-medium text-gray-700">Jenis Sampah</label>
+                    <input type="text" id="jenis_sampah" name="jenis_sampah"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                        value="${jenis_sampah}" required>
                 `;
                 form.appendChild(jenisSampahField);
 
                 var poinSampahField = document.createElement('div');
-                poinSampahField.className = 'mb-3';
+                poinSampahField.className = 'mb-4';
                 poinSampahField.innerHTML = `
-                    <label for="poin_sampah" class="form-label">Poin Sampah</label>
-                    <input type="number" class="form-control" id="poin_sampah" name="poin_sampah" value="${poin_sampah}" required>
+                    <label for="poin_sampah" class="block text-sm font-medium text-gray-700">Poin Sampah</label>
+                    <input type="number" id="poin_sampah" name="poin_sampah"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                        value="${poin_sampah}" required>
                 `;
                 form.appendChild(poinSampahField);
 
                 var submitButton = document.createElement('button');
                 submitButton.type = 'submit';
-                submitButton.className = 'btn btn-success';
+                submitButton.className =
+                    'bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded-full';
                 submitButton.textContent = 'Update';
                 form.appendChild(submitButton);
 
@@ -118,4 +131,4 @@
             });
         });
     </script>
-</x-app-layout>
+@endsection

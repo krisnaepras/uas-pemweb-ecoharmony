@@ -11,16 +11,6 @@ use Illuminate\Support\Facades\Auth;
 
 class BankSampahController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    // public function index()
-    // {
-    //     // Menampilkan data bank sampah yang belum dikonfirmasi
-    //     $banksampahs = BankSampah::where('status_setor', '0')->with('user')->get();
-    //     $jenisSampah = JenisSampah::all();
-    //     return view('banksampah.index', compact('banksampahs'));
-    // }
 
     /**
      * Show the form for creating a new resource.
@@ -111,17 +101,18 @@ class BankSampahController extends Controller
         return redirect()->route('banksampah.confirmation')->with('info', 'Data bank sampah sudah pernah dikonfirmasi sebelumnya.');
     }
 
-    public function confirmation()
-    {
-        $banksampahs = BankSampah::where('status_setor', '0')->with('user')->get();
-        $jenisSampah = JenisSampah::all();
-        return view('admin.banksampah.confirmation', compact('banksampahs'));
-    }
+    
 
     public function history()
     {
-        $banksampahs = BankSampah::where('status_setor', '1')->with('user')->get();
-        $jenisSampah = JenisSampah::all();
+        $banksampahs = BankSampah::where('status_setor', '1')->with('user', 'jenisSampah')->get();
         return view('banksampah.history', compact('banksampahs'));
+    }
+    public function historyAdmin()
+    {
+        $banksampahs = BankSampah::where('status_setor', '1')->with('user', 'jenisSampah')->get();
+        $setoran = BankSampah::where('status_setor', '0')->with('user', 'jenisSampah')->get();
+
+        return view('admin.banksampah.history', compact('banksampahs', 'setoran'));
     }
 }

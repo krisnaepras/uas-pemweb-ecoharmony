@@ -12,11 +12,10 @@
                         <div class="flex flex-row -mx-3">
                             <div class="flex-none w-2/3 max-w-full px-3">
                                 <div>
-                                    <p class="mb-0 font-sans text-sm font-semibold leading-normal">Today's Money
+                                    <p class="mb-0 font-sans text-sm font-semibold leading-normal">Penghasilan
                                     </p>
                                     <h5 class="mb-0 font-bold">
-                                        $53,000
-                                        <span class="text-sm leading-normal font-weight-bolder text-lime-500">+55%</span>
+                                        {{ $total }}
                                     </h5>
                                 </div>
                             </div>
@@ -38,11 +37,10 @@
                         <div class="flex flex-row -mx-3">
                             <div class="flex-none w-2/3 max-w-full px-3">
                                 <div>
-                                    <p class="mb-0 font-sans text-sm font-semibold leading-normal">Today's Users
+                                    <p class="mb-0 font-sans text-sm font-semibold leading-normal">Users
                                     </p>
                                     <h5 class="mb-0 font-bold">
-                                        2,300
-                                        <span class="text-sm leading-normal font-weight-bolder text-lime-500">+3%</span>
+                                        {{ $usersCount }}
                                     </h5>
                                 </div>
                             </div>
@@ -73,7 +71,9 @@
                     </div>
                     <div class="flex-auto p-4">
                         <div>
-                            <canvas id="chart-line" height="300"></canvas>
+                            <canvas id="chart-line">
+
+                            </canvas>
                         </div>
                     </div>
                 </div>
@@ -91,37 +91,102 @@
                             </script>
                             made with <i class="fa fa-heart"></i> by
                             <a href="https://www.creative-tim.com" class="font-semibold text-slate-700"
-                                target="_blank">Creative Tim</a>
-                            for a better web.
+                                target="_blank">Team 7</a>
                         </div>
-                    </div>
-                    <div class="w-full max-w-full px-3 mt-0 shrink-0 lg:w-1/2 lg:flex-none">
-                        <ul class="flex flex-wrap justify-center pl-0 mb-0 list-none lg:justify-end">
-                            <li class="nav-item">
-                                <a href="https://www.creative-tim.com"
-                                    class="block px-4 pt-0 pb-1 text-sm font-normal transition-colors ease-soft-in-out text-slate-500"
-                                    target="_blank">Creative Tim</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="https://www.creative-tim.com/presentation"
-                                    class="block px-4 pt-0 pb-1 text-sm font-normal transition-colors ease-soft-in-out text-slate-500"
-                                    target="_blank">About Us</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="https://creative-tim.com/blog"
-                                    class="block px-4 pt-0 pb-1 text-sm font-normal transition-colors ease-soft-in-out text-slate-500"
-                                    target="_blank">Blog</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="https://www.creative-tim.com/license"
-                                    class="block px-4 pt-0 pb-1 pr-0 text-sm font-normal transition-colors ease-soft-in-out text-slate-500"
-                                    target="_blank">License</a>
-                            </li>
-                        </ul>
                     </div>
                 </div>
             </div>
         </footer>
     </div>
     <!-- end cards -->
+
+    <script>
+        var ctx2 = document.getElementById("chart-line").getContext("2d");
+
+        var gradientStroke1 = ctx2.createLinearGradient(0, 230, 0, 50);
+        gradientStroke1.addColorStop(1, "rgba(203,12,159,0.2)");
+        gradientStroke1.addColorStop(0.2, "rgba(72,72,176,0.0)");
+        gradientStroke1.addColorStop(0, "rgba(203,12,159,0)");
+
+        var gradientStroke2 = ctx2.createLinearGradient(0, 230, 0, 50);
+        gradientStroke2.addColorStop(1, "rgba(20,23,39,0.2)");
+        gradientStroke2.addColorStop(0.2, "rgba(72,72,176,0.0)");
+        gradientStroke2.addColorStop(0, "rgba(20,23,39,0)");
+
+        new Chart(ctx2, {
+            type: "line",
+            data: {
+                labels: @json($labels),
+                datasets: [{
+                    label: "Transaksi Harian",
+                    tension: 0.4,
+                    borderWidth: 0,
+                    pointRadius: 0,
+                    borderColor: "#cb0c9f",
+                    borderWidth: 3,
+                    backgroundColor: gradientStroke1,
+                    fill: true,
+                    data: @json($data),
+                    maxBarThickness: 6,
+                }, ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                },
+                interaction: {
+                    intersect: false,
+                    mode: "index",
+                },
+                scales: {
+                    y: {
+                        grid: {
+                            drawBorder: false,
+                            display: true,
+                            drawOnChartArea: true,
+                            drawTicks: false,
+                            borderDash: [5, 5],
+                        },
+                        ticks: {
+                            display: true,
+                            padding: 10,
+                            color: "#b2b9bf",
+                            font: {
+                                size: 11,
+                                family: "Open Sans",
+                                style: "normal",
+                                lineHeight: 2,
+                            },
+                        },
+                    },
+                    x: {
+                        grid: {
+                            drawBorder: false,
+                            display: false,
+                            drawOnChartArea: false,
+                            drawTicks: false,
+                            borderDash: [5, 5],
+                        },
+                        ticks: {
+                            display: true,
+                            color: "#b2b9bf",
+                            padding: 20,
+                            font: {
+                                size: 11,
+                                family: "Open Sans",
+                                style: "normal",
+                                lineHeight: 2,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+    </script>
+    <script src="{{ asset('/assets/js/chart-2.js') }}" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 @endsection

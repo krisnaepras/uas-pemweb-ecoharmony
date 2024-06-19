@@ -11,7 +11,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //FK: user, pruduk_id(1toN)
         Schema::create('keranjang', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->constrained(
