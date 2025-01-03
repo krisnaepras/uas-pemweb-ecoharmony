@@ -4,6 +4,7 @@ EcoHarmony adalah proyek akhir untuk mata kuliah Pengembangan Web. Proyek ini be
 
 ## Daftar Isi
 - [Fitur](#fitur)
+- [Screenshoot](#screenshoot)
 - [Instalasi](#instalasi)
 - [Penggunaan](#penggunaan)
 
@@ -13,6 +14,18 @@ EcoHarmony adalah proyek akhir untuk mata kuliah Pengembangan Web. Proyek ini be
 - **Manajemen Bank Sampah**: Fitur untuk mengelola data bank sampah.
 - **Berita dan Tips**: Fitur untuk menambahkan berita dan tips terkait lingkungan.
 - **Manajemen Transaksi**: Mengelola transaksi yang dilakukan oleh pengguna.
+
+## Screenshot
+
+### Admin (sebagian)
+![Admin Screenshot 1](https://ik.imagekit.io/epras/Screenshot%202025-01-04%20020946.png?updatedAt=1735931802004)
+![Admin Screenshot 2](https://ik.imagekit.io/epras/Screenshot%202025-01-04%20021008.png?updatedAt=1735931802128)
+![Admin Screenshot 3](https://ik.imagekit.io/epras/Screenshot%202025-01-04%20021042.png?updatedAt=1735931801988)
+
+### User (sebagian)
+![User Screenshot 1](https://ik.imagekit.io/epras/Screenshot%202025-01-04%20021221.png?updatedAt=1735931801383)
+![User Screenshot 2](https://ik.imagekit.io/epras/Screenshot%202025-01-04%20021358.png?updatedAt=1735931802453)
+![User Screenshot 3](https://ik.imagekit.io/epras/Screenshot%202025-01-04%20021419.png?updatedAt=1735931802100)
 
 ## Instalasi
 
@@ -50,7 +63,7 @@ EcoHarmony adalah proyek akhir untuk mata kuliah Pengembangan Web. Proyek ini be
    ```bash
    php artisan migrate
    ```
-Penggunaan
+## Penggunaan
 Setelah server dijalankan, Anda dapat mengakses aplikasi di http://localhost:8000. Berikut adalah beberapa fitur utama yang dapat digunakan:
 - Manajemen Pengguna: Tambah, edit, dan hapus pengguna.
 - Manajemen Bank Sampah: Tambah, edit, dan hapus data bank sampah.
